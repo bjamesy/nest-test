@@ -13,6 +13,7 @@ flowchart LR
     API -->|"Mongoose"| Mongo
     API -->|"S3 API: HeadObject (+ locally-signed PUT URLs)"| R2
     API -->|"enqueue: ingestion queue"| Redis
+    API -->|"rate-limit counters"| Redis
     Worker -->|"consume: ingestion queue"| Redis
     Worker -->|"Mongoose: update Job status"| Mongo
 
@@ -20,4 +21,3 @@ flowchart LR
     %% is actually scaffolded, per the architecture-diagram skill:
     %%   - apps/worker reading the actual upload from R2 to do real ingestion
     %%     work (currently a no-op placeholder — see IngestionProcessor)
-    %%   - Redis also backing rate limiting on apps/api (not wired yet)

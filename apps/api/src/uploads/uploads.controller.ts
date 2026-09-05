@@ -7,12 +7,14 @@ import { UploadsService } from './uploads.service.js';
 import { CreateUploadDto } from './dto/create-upload.dto.js';
 import { CompleteUploadDto } from './dto/complete-upload.dto.js';
 import { UploadDocument } from './schemas/upload.schema.js';
+import { UploadInitiateRateLimitGuard } from './guards/upload-initiate-rate-limit.guard.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('uploads')
 export class UploadsController {
   constructor(private readonly uploadsService: UploadsService) {}
 
+  @UseGuards(UploadInitiateRateLimitGuard)
   @Post('initiate')
   initiate(
     @CurrentUser() user: AuthenticatedUser,

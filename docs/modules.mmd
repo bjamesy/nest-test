@@ -2,6 +2,8 @@ flowchart TD
     subgraph apps/api
         subgraph AppModule
             AppController --> AppService
+            AppModule -.->|"global guard, IP-keyed"| ThrottlerGuard[["ThrottlerGuard (default)"]]
+            ThrottlerGuard --> RateLimitRedis[("Redis")]
         end
 
         subgraph UsersModule
@@ -24,6 +26,8 @@ flowchart TD
         subgraph UploadsModule
             UploadsController --> UploadsService
             UploadsController --> JwtAuthGuard
+            UploadsController -->|"initiate only, per-user"| UploadInitiateRateLimitGuard
+            UploadInitiateRateLimitGuard --> RateLimitRedis
             UploadsService --> UploadModel[(Upload)]
             UploadsService --> StorageService
             UploadsModule -. imports .-> AuthModule
