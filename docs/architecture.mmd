@@ -1,0 +1,23 @@
+flowchart LR
+    Browser["Browser<br/>(runs apps/web UI)"]
+    Web["apps/web<br/>Next.js (Client Components)"]
+    API["apps/api<br/>Nest.js REST API"]
+    Worker["apps/worker<br/>Nest.js BullMQ consumer"]
+    Mongo[("MongoDB")]
+    R2[("Cloudflare R2")]
+    Redis[("Redis")]
+
+    Browser -->|"loads UI"| Web
+    Browser -->|"HTTPS: /auth, /uploads, /jobs"| API
+    Browser -->|"PUT (signed URL)"| R2
+    API -->|"Mongoose"| Mongo
+    API -->|"S3 API: HeadObject (+ locally-signed PUT URLs)"| R2
+    API -->|"enqueue: ingestion queue"| Redis
+    Worker -->|"consume: ingestion queue"| Redis
+    Worker -->|"Mongoose: update Job status"| Mongo
+
+    %% Not yet built (see PIPELINE_DESIGN.md) — add to this diagram once each
+    %% is actually scaffolded, per the architecture-diagram skill:
+    %%   - apps/worker reading the actual upload from R2 to do real ingestion
+    %%     work (currently a no-op placeholder — see IngestionProcessor)
+    %%   - Redis also backing rate limiting on apps/api (not wired yet)

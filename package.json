@@ -1,0 +1,25 @@
+{
+  "name": "prep-proj",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build:api": "npm run build -w @prep-proj/api",
+    "start:api": "npm run start -w @prep-proj/api",
+    "start:api:dev": "npm run start:dev -w @prep-proj/api",
+    "lint:api": "npm run lint -w @prep-proj/api",
+    "test:api": "npm run test -w @prep-proj/api",
+    "test:api:e2e": "npm run test:e2e -w @prep-proj/api",
+    "dev:web": "npm run dev -w @prep-proj/web",
+    "build:web": "npm run build -w @prep-proj/web",
+    "lint:web": "npm run lint -w @prep-proj/web",
+    "build:shared": "npm run build -w @prep-proj/shared",
+    "dev:worker": "npm run start:dev -w @prep-proj/worker",
+    "build:worker": "npm run build -w @prep-proj/worker",
+    "lint:worker": "npm run lint -w @prep-proj/worker",
+    "test:worker": "npm run test -w @prep-proj/worker"
+  }
+}

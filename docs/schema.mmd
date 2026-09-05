@@ -1,0 +1,8 @@
+flowchart TD
+    Job["Job<br/>status: JobStatus<br/>stage: string<br/>progress: number<br/>error: string<br/>result: unknown"]
+    Upload["Upload<br/>key: string<br/>filename: string<br/>size: number<br/>mimeType: string<br/>status: UploadStatus<br/>multipartUploadId: string<br/>parts: UploadPart<br/>completedAt: Date"]
+    User["User<br/>email: string<br/>passwordHash: string"]
+    Job["Job<br/>status: JobStatus<br/>stage: string<br/>progress: number<br/>error: string"]
+    Job -->|"uploadId"| Upload
+    Job -->|"userId"| User
+    Upload -->|"userId"| User

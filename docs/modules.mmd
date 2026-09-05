@@ -1,0 +1,50 @@
+flowchart TD
+    subgraph apps/api
+        subgraph AppModule
+            AppController --> AppService
+        end
+
+        subgraph UsersModule
+            UsersService --> UserModel[(User)]
+        end
+
+        subgraph AuthModule
+            AuthController --> AuthService
+            AuthController --> JwtAuthGuard
+            AuthService --> UsersService
+            AuthService --> JwtService
+            JwtStrategy --> UsersService
+            AuthModule -. re-exports .-> PassportModule[["PassportModule\n(AuthModuleOptions)"]]
+        end
+
+        subgraph StorageModule
+            StorageService --> R2[("Cloudflare R2")]
+        end
+
+        subgraph UploadsModule
+            UploadsController --> UploadsService
+            UploadsController --> JwtAuthGuard
+            UploadsService --> UploadModel[(Upload)]
+            UploadsService --> StorageService
+            UploadsModule -. imports .-> AuthModule
+            UploadsModule -. imports .-> StorageModule
+        end
+
+        subgraph JobsModule
+            JobsController --> JobsService
+            JobsController --> JwtAuthGuard
+            JobsService --> JobModel[(Job)]
+            JobsService --> UploadsService
+            JobsService --> IngestionQueue[["BullMQ: ingestion queue"]]
+            JobsModule -. imports .-> UploadsModule
+            JobsModule -. imports .-> AuthModule
+        end
+    end
+
+    subgraph apps/worker
+        subgraph IngestionModule
+            IngestionProcessor -->|"consumes"| IngestionQueue
+            IngestionProcessor --> JobsRepository
+            JobsRepository --> WorkerJobModel[(Job)]
+        end
+    end
